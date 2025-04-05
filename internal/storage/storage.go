@@ -3,6 +3,7 @@ package storage
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"rp/internal/crypt"
@@ -22,13 +23,19 @@ type PasswordStorage struct {
 }
 
 func getStoragePath() (string, error) {
-	home, err := os.UserHomeDir()
+	currentDir, err := os.Getwd()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("не удалось определить текущую директорию: %v", err)
 	}
-	return filepath.Join(home, storageFileName), nil
-}
 
+	storageDir := filepath.Join(currentDir, "data")
+
+	if err := os.MkdirAll(storageDir, 0700); err != nil {
+		return "", fmt.Errorf("не удалось создать папку для данных: %v", err)
+	}
+
+	return filepath.Join(storageDir, storageFileName), nil
+}
 func InitStorage(c *cli.Context) error {
 	storagePath, err := getStoragePath()
 	if err != nil {

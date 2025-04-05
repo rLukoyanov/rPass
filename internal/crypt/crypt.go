@@ -14,7 +14,7 @@ import (
 )
 
 func GetMasterKey() ([]byte, error) {
-	fmt.Print("Введите мастер пароль")
+	fmt.Print("Введите мастер пароль: ")
 	password, err := term.ReadPassword(int(syscall.Stdin))
 	if err != nil {
 		return nil, err
